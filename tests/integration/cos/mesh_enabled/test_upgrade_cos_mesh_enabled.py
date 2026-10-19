@@ -1,7 +1,4 @@
-"""This python test file deploys COS where COS components are put on a service mesh.
-
-For more further TLS configuration details, refer to our documentation:
-https://documentation.ubuntu.com/observability/latest/how-to/configure-tls-encryption/"""
+"""This python test file deploys COS and then enables service mesh."""
 
 import os
 from pathlib import Path
@@ -14,8 +11,7 @@ from helpers import (
     xfail_otelcol_logs,
 )
 
-TRACK_3_TF_FILE = Path(__file__).parent.resolve() / "track-3.0.tf"
-TRACK_DEV_TF_FILE = Path(__file__).parent.resolve() / "track-dev.tf"
+TF_FILE = Path(__file__).parent.parent.resolve() / "tls_none/track-dev.tf"
 S3_ENDPOINT = {
     "s3_endpoint": os.getenv("S3_ENDPOINT"),
     "s3_secret_key": os.getenv("S3_SECRET_KEY"),
@@ -29,10 +25,10 @@ def test_envvars():
     )
 
 
-def test_deploy_from_track(tf_manager, cos_model: jubilant.Juju):
-    # GIVEN a module deployed from the previous track
-    tf_manager.init(TRACK_3_TF_FILE)
-    tf_manager.apply(model=cos_model.model, **S3_ENDPOINT)
+def test_deploy_without_mesh(tf_manager, cos_model: jubilant.Juju):
+    # GIVEN a module deployed without service mesh enabled
+    tf_manager.init(TF_FILE)
+    tf_manager.apply(model=cos_model.model, mesh=False, **S3_ENDPOINT)
 
     # THEN the model is upgraded and is healthy
     generic_assertions(cos_model)
@@ -47,9 +43,9 @@ def test_deploy_to_track_dev(
     tf_manager, cos_model: jubilant.Juju, istio_model: jubilant.Juju
 ):
     # WHEN upgraded to track dev
-    tf_manager.init(TRACK_DEV_TF_FILE)
+    tf_manager.init(TF_FILE)
     tf_manager.apply(
-        model=cos_model.model, istio_model=istio_model.model, **S3_ENDPOINT
+        model=cos_model.model, istio_model=istio_model.model, mesh=True, **S3_ENDPOINT
     )
 
     # THEN the Istio control plane is healthy and the model is upgraded and healthy

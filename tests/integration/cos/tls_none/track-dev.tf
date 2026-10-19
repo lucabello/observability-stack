@@ -33,7 +33,7 @@ module "cos" {
   source       = "git::https://github.com/canonical/observability-stack//terraform/cos"
   model        = { uuid = data.juju_model.model.uuid }
   risk         = "edge"
-  internal_tls = false
+  internal_tls = !var.mesh
 
   s3_endpoint   = var.s3_endpoint
   s3_secret_key = var.s3_secret_key
@@ -47,4 +47,10 @@ module "cos" {
   mimir_worker      = { backend_units = 1, read_units = 1, write_units = 1 }
   tempo_coordinator = { units = 1 }
   tempo_worker      = { compactor_units = 1, distributor_units = 1, ingester_units = 1, metrics_generator_units = 1, querier_units = 1, query_frontend_units = 1 }
+}
+
+# This is used by ../mesh_enabled
+variable "mesh" {
+  type    = boolean
+  default = false
 }
