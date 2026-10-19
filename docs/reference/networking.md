@@ -17,6 +17,7 @@ When COS is deployed with [service mesh](https://canonical-service-mesh-document
 ```
 
 ## Egress
+
 Some charms require external connectivity to function correctly.
 
 As a common requirement, the environment should be able to reach:
@@ -44,7 +45,6 @@ juju bootstrap microk8s uk8s \
 ```
 
 Note that these config values can only be set at bootstrap time, and are read-only thereafter.
-
 
 ## Juju relation topology
 

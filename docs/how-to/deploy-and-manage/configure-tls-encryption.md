@@ -25,7 +25,6 @@ already installed to use this feature.
 <!-- Note: edit this diagram by dragging it into a drawio editor -->
 ![high-level-tls.png](/assets/high-level-tls.png)
 
-
 ## Full TLS encryption implementation details
 
 The recommended deployment for COS implements full TLS encryption, which requires an external certificates provider offer URL (cross-model relation) and has the following semantics:
